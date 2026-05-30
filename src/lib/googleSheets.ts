@@ -25,11 +25,21 @@ checkEnvVars();
 const SCOPES = ['https://www.googleapis.com/auth/spreadsheets'];
 
 export async function getAuthToken() {
+  let privateKey = process.env.GOOGLE_PRIVATE_KEY || '';
+  // Remove surrounding quotes if accidentally included
+  if (privateKey.startsWith('"') && privateKey.endsWith('"')) {
+    privateKey = privateKey.slice(1, -1);
+  }
+  // Remove surrounding single quotes if accidentally included
+  if (privateKey.startsWith("'") && privateKey.endsWith("'")) {
+    privateKey = privateKey.slice(1, -1);
+  }
+  privateKey = privateKey.replace(/\\n/g, '\n');
+
   const auth = new google.auth.GoogleAuth({
     credentials: {
       client_email: process.env.GOOGLE_SERVICE_ACCOUNT_EMAIL,
-      // Replace escaped newlines if passed through environment variables
-      private_key: process.env.GOOGLE_PRIVATE_KEY?.replace(/\\n/g, '\n'),
+      private_key: privateKey,
     },
     scopes: SCOPES,
   });
@@ -40,8 +50,14 @@ export async function getSheetData(range: string) {
   try {
     const auth = await getAuthToken();
     const sheets = google.sheets({ version: 'v4', auth });
+    
+    let sheetId = process.env.GOOGLE_SHEET_ID || '';
+    if (sheetId.includes('/d/')) {
+      sheetId = sheetId.split('/d/')[1].split('/')[0];
+    }
+
     const response = await sheets.spreadsheets.values.get({
-      spreadsheetId: process.env.GOOGLE_SHEET_ID,
+      spreadsheetId: sheetId,
       range,
     });
     return response.data.values;
@@ -55,8 +71,14 @@ export async function appendSheetData(range: string, values: any[][]) {
   try {
     const auth = await getAuthToken();
     const sheets = google.sheets({ version: 'v4', auth });
+
+    let sheetId = process.env.GOOGLE_SHEET_ID || '';
+    if (sheetId.includes('/d/')) {
+      sheetId = sheetId.split('/d/')[1].split('/')[0];
+    }
+
     const response = await sheets.spreadsheets.values.append({
-      spreadsheetId: process.env.GOOGLE_SHEET_ID,
+      spreadsheetId: sheetId,
       range,
       valueInputOption: 'USER_ENTERED',
       requestBody: {
