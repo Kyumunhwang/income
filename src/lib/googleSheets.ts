@@ -25,16 +25,19 @@ checkEnvVars();
 const SCOPES = ['https://www.googleapis.com/auth/spreadsheets'];
 
 export async function getAuthToken() {
-  let privateKey = process.env.GOOGLE_PRIVATE_KEY || '';
-  // Remove surrounding quotes if accidentally included
-  if (privateKey.startsWith('"') && privateKey.endsWith('"')) {
-    privateKey = privateKey.slice(1, -1);
-  }
-  // Remove surrounding single quotes if accidentally included
-  if (privateKey.startsWith("'") && privateKey.endsWith("'")) {
-    privateKey = privateKey.slice(1, -1);
-  }
-  privateKey = privateKey.replace(/\\n/g, '\n');
+  let rawKey = process.env.GOOGLE_PRIVATE_KEY || '';
+  
+  // Extract just the base64 string by removing headers, footers, quotes, and all whitespace/newlines
+  let keyContent = rawKey
+    .replace(/-----BEGIN PRIVATE KEY-----/g, '')
+    .replace(/-----END PRIVATE KEY-----/g, '')
+    .replace(/\\n/g, '')
+    .replace(/["']/g, '') // Remove any accidental quotes
+    .replace(/\s+/g, ''); // Remove all spaces and newlines
+
+  // Rebuild the key into strict 64-character chunks exactly as OpenSSL expects
+  const chunks = keyContent.match(/.{1,64}/g) || [];
+  const privateKey = `-----BEGIN PRIVATE KEY-----\n${chunks.join('\n')}\n-----END PRIVATE KEY-----\n`;
 
   const auth = new google.auth.GoogleAuth({
     credentials: {
