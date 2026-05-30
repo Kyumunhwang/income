@@ -25,23 +25,40 @@ checkEnvVars();
 const SCOPES = ['https://www.googleapis.com/auth/spreadsheets'];
 
 export async function getAuthToken() {
-  let rawKey = process.env.GOOGLE_PRIVATE_KEY || '';
-  
-  // Extract just the base64 string by removing headers, footers, quotes, and all whitespace/newlines
-  let keyContent = rawKey
-    .replace(/-----BEGIN PRIVATE KEY-----/g, '')
-    .replace(/-----END PRIVATE KEY-----/g, '')
-    .replace(/\\n/g, '')
-    .replace(/["']/g, '') // Remove any accidental quotes
-    .replace(/\s+/g, ''); // Remove all spaces and newlines
+  let privateKey = process.env.GOOGLE_PRIVATE_KEY || '';
+  let clientEmail = process.env.GOOGLE_SERVICE_ACCOUNT_EMAIL || '';
 
-  // Rebuild the key into strict 64-character chunks exactly as OpenSSL expects
-  const chunks = keyContent.match(/.{1,64}/g) || [];
-  const privateKey = `-----BEGIN PRIVATE KEY-----\n${chunks.join('\n')}\n-----END PRIVATE KEY-----\n`;
+  // 1. If the user accidentally pasted the ENTIRE JSON file into GOOGLE_PRIVATE_KEY
+  if (privateKey.trim().startsWith('{')) {
+    try {
+      const parsed = JSON.parse(privateKey);
+      if (parsed.private_key) privateKey = parsed.private_key;
+      if (parsed.client_email && !clientEmail) clientEmail = parsed.client_email;
+    } catch (e) {
+      console.warn("Failed to parse GOOGLE_PRIVATE_KEY as JSON.");
+    }
+  }
+
+  // 2. Remove surrounding quotes if accidentally included
+  privateKey = privateKey.replace(/^["']|["']$/g, '');
+
+  // 3. Handle literal \n strings (very common in Vercel env vars)
+  // This replaces literal backslash+n with an actual newline character
+  privateKey = privateKey.split('\\n').join('\n');
+
+  // 4. If the key STILL doesn't have real newlines, it's completely mangled (spaces instead of newlines)
+  if (privateKey && !privateKey.includes('\n')) {
+    let keyContent = privateKey
+      .replace(/-----BEGIN PRIVATE KEY-----/g, '')
+      .replace(/-----END PRIVATE KEY-----/g, '')
+      .replace(/\s+/g, '');
+    const chunks = keyContent.match(/.{1,64}/g) || [];
+    privateKey = `-----BEGIN PRIVATE KEY-----\n${chunks.join('\n')}\n-----END PRIVATE KEY-----\n`;
+  }
 
   const auth = new google.auth.GoogleAuth({
     credentials: {
-      client_email: process.env.GOOGLE_SERVICE_ACCOUNT_EMAIL,
+      client_email: clientEmail,
       private_key: privateKey,
     },
     scopes: SCOPES,
