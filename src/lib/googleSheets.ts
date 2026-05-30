@@ -39,20 +39,18 @@ export async function getAuthToken() {
     }
   }
 
-  // 2. Remove surrounding quotes if accidentally included
-  privateKey = privateKey.replace(/^["']|["']$/g, '');
-
-  // 3. Handle literal \n strings (very common in Vercel env vars)
-  // This replaces literal backslash+n with an actual newline character
-  privateKey = privateKey.split('\\n').join('\n');
-
-  // 4. If the key STILL doesn't have real newlines, it's completely mangled (spaces instead of newlines)
-  if (privateKey && !privateKey.includes('\n')) {
-    let keyContent = privateKey
-      .replace(/-----BEGIN PRIVATE KEY-----/g, '')
-      .replace(/-----END PRIVATE KEY-----/g, '')
+  // 2. Unconditionally extract and rebuild the PEM key to avoid ANY OpenSSL formatting errors
+  if (privateKey) {
+    // Strip everything: headers, footers, quotes, literal \n strings, and all whitespace
+    let base64 = privateKey
+      .replace(/-----BEGIN PRIVATE KEY-----/gi, '')
+      .replace(/-----END PRIVATE KEY-----/gi, '')
+      .replace(/\\n/g, '')
+      .replace(/['"]/g, '')
       .replace(/\s+/g, '');
-    const chunks = keyContent.match(/.{1,64}/g) || [];
+      
+    // Rebuild it perfectly
+    const chunks = base64.match(/.{1,64}/g) || [];
     privateKey = `-----BEGIN PRIVATE KEY-----\n${chunks.join('\n')}\n-----END PRIVATE KEY-----\n`;
   }
 
