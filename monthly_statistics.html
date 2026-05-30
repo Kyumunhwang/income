@@ -1,0 +1,253 @@
+<!DOCTYPE html>
+
+<html lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>FinancePro - Monthly Statistics</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Hanken+Grotesk:wght@600;700&amp;family=Inter:wght@400;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            "colors": {
+                    "secondary-fixed-dim": "#adc6ff",
+                    "surface-container-lowest": "#ffffff",
+                    "error-container": "#ffdad6",
+                    "on-primary-fixed-variant": "#3f465c",
+                    "tertiary-container": "#271901",
+                    "on-secondary-fixed": "#001a42",
+                    "on-surface-variant": "#45464d",
+                    "on-error": "#ffffff",
+                    "on-tertiary": "#ffffff",
+                    "surface-container-low": "#f6f3f5",
+                    "primary-fixed-dim": "#bec6e0",
+                    "on-primary-fixed": "#131b2e",
+                    "on-error-container": "#93000a",
+                    "tertiary": "#000000",
+                    "on-background": "#1b1b1d",
+                    "surface-variant": "#e4e2e4",
+                    "outline": "#76777d",
+                    "primary-container": "#131b2e",
+                    "error": "#ba1a1a",
+                    "inverse-surface": "#303032",
+                    "surface-dim": "#dcd9db",
+                    "on-secondary-container": "#fefcff",
+                    "surface-container": "#f0edef",
+                    "background": "#fcf8fa",
+                    "surface": "#fcf8fa",
+                    "secondary-fixed": "#d8e2ff",
+                    "secondary": "#0058be",
+                    "tertiary-fixed": "#fcdeb5",
+                    "on-primary": "#ffffff",
+                    "secondary-container": "#2170e4",
+                    "inverse-primary": "#bec6e0",
+                    "on-secondary": "#ffffff",
+                    "surface-tint": "#565e74",
+                    "tertiary-fixed-dim": "#dec29a",
+                    "on-tertiary-container": "#98805d",
+                    "surface-bright": "#fcf8fa",
+                    "surface-container-high": "#eae7e9",
+                    "surface-container-highest": "#e4e2e4",
+                    "inverse-on-surface": "#f3f0f2",
+                    "on-tertiary-fixed": "#271901",
+                    "on-tertiary-fixed-variant": "#574425",
+                    "on-surface": "#1b1b1d",
+                    "primary": "#000000",
+                    "outline-variant": "#c6c6cd",
+                    "primary-fixed": "#dae2fd",
+                    "on-secondary-fixed-variant": "#004395",
+                    "on-primary-container": "#7c839b"
+            },
+            "borderRadius": {
+                    "DEFAULT": "0.25rem",
+                    "lg": "0.5rem",
+                    "xl": "0.75rem",
+                    "full": "9999px"
+            },
+            "spacing": {
+                    "gutter": "24px",
+                    "margin-mobile": "16px",
+                    "margin-desktop": "32px",
+                    "container-max": "1280px",
+                    "base": "8px"
+            },
+            "fontFamily": {
+                    "headline-lg": ["Hanken Grotesk"],
+                    "body-lg": ["Inter"],
+                    "data-mono": ["Inter"],
+                    "headline-md": ["Hanken Grotesk"],
+                    "body-sm": ["Inter"],
+                    "label-caps": ["Inter"]
+            },
+            "fontSize": {
+                    "headline-lg": ["32px", {"lineHeight": "40px", "letterSpacing": "-0.02em", "fontWeight": "700"}],
+                    "body-lg": ["16px", {"lineHeight": "24px", "fontWeight": "400"}],
+                    "data-mono": ["15px", {"lineHeight": "24px", "letterSpacing": "0.01em", "fontWeight": "600"}],
+                    "headline-md": ["20px", {"lineHeight": "28px", "fontWeight": "600"}],
+                    "body-sm": ["14px", {"lineHeight": "20px", "fontWeight": "400"}],
+                    "label-caps": ["12px", {"lineHeight": "16px", "letterSpacing": "0.05em", "fontWeight": "700"}]
+            }
+          },
+        },
+      }
+    </script>
+<style>
+        .chart-gradient-primary {
+            background: linear-gradient(180deg, rgba(0, 88, 190, 0.1) 0%, rgba(0, 88, 190, 0) 100%);
+        }
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+            vertical-align: middle;
+        }
+        .elevation-low { box-shadow: 0px 2px 4px rgba(15, 23, 42, 0.04); }
+        .elevation-high { box-shadow: 0px 12px 24px rgba(15, 23, 42, 0.08); }
+    </style>
+</head>
+<body class="bg-background text-on-background font-body-lg">
+<!-- SideNavBar -->
+<aside class="h-screen w-64 fixed left-0 top-0 bg-surface-container-low dark:bg-surface-container-lowest shadow-sm flex flex-col h-full py-8 px-4 z-50">
+<div class="mb-12 px-4">
+<h1 class="text-headline-md font-headline-md text-primary dark:text-primary-fixed">FinancePro</h1>
+<p class="font-body-sm text-on-surface-variant opacity-70">Personal Ledger</p>
+</div>
+<nav class="flex-1 space-y-2">
+<a class="flex items-center gap-3 px-4 py-3 rounded-lg text-on-surface-variant hover:text-secondary hover:bg-surface-container-high transition-all duration-200 active:scale-95" href="#">
+<span class="material-symbols-outlined">dashboard</span>
+<span class="font-body-lg">Dashboard</span>
+</a>
+<a class="flex items-center gap-3 px-4 py-3 rounded-lg text-on-surface-variant hover:text-secondary hover:bg-surface-container-high transition-all duration-200 active:scale-95" href="#">
+<span class="material-symbols-outlined">payments</span>
+<span class="font-body-lg">Income</span>
+</a>
+<a class="flex items-center gap-3 px-4 py-3 rounded-lg text-on-surface-variant hover:text-secondary hover:bg-surface-container-high transition-all duration-200 active:scale-95" href="#">
+<span class="material-symbols-outlined">receipt_long</span>
+<span class="font-body-lg">Expenses</span>
+</a>
+<a class="flex items-center gap-3 px-4 py-3 rounded-lg text-secondary font-bold border-r-4 border-secondary bg-surface-container-high transition-all duration-200 active:scale-95" href="#">
+<span class="material-symbols-outlined">leaderboard</span>
+<span class="font-body-lg">Statistics</span>
+</a>
+</nav>
+<div class="mt-auto pt-8 px-4 flex items-center gap-3">
+<img alt="User Profile Avatar" class="w-10 h-10 rounded-full bg-outline-variant" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCSGoYH4cx5qGRmiYagXL2zRXAvWMnMdZsrqU9GK6J-z9KL3u88fCHDPqqigMfKCxROHaiB3QAj7RX6VSKqaLvTc0IgsRy-VigVeQYE0slaB8dS-OVO0JfZ6MxvkYKe5CqZxUOJ2rHvBgyxQze2TN8MQfVdkPfAQdJaOfErNTkFOj8P4mRpYyGntow3FXNL1GhO94cJjS6tKKjGDv8wtRqC5ZOuD9QZdvE518qMUlAPl3WQbEt4ciN7CxSRi4R_CVPy3MZpUAKjGSc"/>
+<div class="overflow-hidden">
+<p class="font-body-sm font-bold truncate">Alex Sterling</p>
+<p class="text-xs text-on-surface-variant truncate">Premium Account</p>
+</div>
+</div>
+</aside>
+<!-- TopAppBar -->
+<header class="fixed top-0 right-0 left-64 h-16 bg-surface dark:bg-surface-container-low border-b border-outline-variant shadow-sm flex justify-between items-center px-8 z-40">
+<div class="flex items-center flex-1 max-w-xl">
+<div class="relative w-full">
+<span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-on-surface-variant">search</span>
+<input class="w-full bg-surface-container pl-10 pr-4 py-2 rounded-lg border-none focus:ring-2 focus:ring-secondary/20 font-body-sm" placeholder="Search analytics..." type="text"/>
+</div>
+</div>
+<div class="flex items-center gap-6">
+<button class="relative cursor-pointer active:opacity-80 transition-colors hover:bg-surface-container-highest p-2 rounded-full">
+<span class="material-symbols-outlined text-on-surface-variant">notifications</span>
+<span class="absolute top-2 right-2 w-2 h-2 bg-error rounded-full border-2 border-surface"></span>
+</button>
+<button class="cursor-pointer active:opacity-80 transition-colors hover:bg-surface-container-highest p-2 rounded-full">
+<span class="material-symbols-outlined text-on-surface-variant">settings</span>
+</button>
+<div class="h-8 w-px bg-outline-variant mx-2"></div>
+<img alt="User Profile" class="w-8 h-8 rounded-full cursor-pointer hover:ring-2 hover:ring-secondary transition-all" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCorL-NAN5JUojHzR0v6mbQBgEaM2kQpreRrt7HkJd8QaEWUrbXZkpzEL6MIx1hGW7HiQu2M9iAXjZ0bUzoyxzkFA0pn8Njx3bQkeh4LqN2lWfsU_c9ORadcaAs7ya2NxwmOpodxj3yR4MkGzo3ds1p4oD2uPBTU1rgm35dif5tUYK6tyDa_ryD2lTdTE1rl8NtG1yeVoKPodba2TZOcBRPzAa14yTwp9WdQWXyt_WM2renZ8LNm41jWs1Tup5FcXbEkxdIs5GoMfM"/>
+</div>
+</header>
+<!-- Main Content -->
+<main class="ml-64 pt-24 pb-12 px-8 min-h-screen">
+<div class="max-w-7xl mx-auto space-y-8">
+<!-- Header Section -->
+<div class="flex flex-col md:flex-row md:items-end justify-between gap-4">
+<div>
+<h2 class="font-headline-lg text-headline-lg text-primary">Monthly Statistics</h2>
+<p class="font-body-lg text-on-surface-variant">Detailed breakdown of your financial trajectory for 2024.</p>
+</div>
+<div class="flex items-center gap-3">
+<button class="flex items-center gap-2 px-4 py-2 bg-surface border border-outline-variant rounded-lg font-body-sm font-bold hover:bg-surface-container-high transition-colors">
+<span class="material-symbols-outlined text-sm">calendar_today</span>
+                        This Year
+                    </button>
+<button class="flex items-center gap-2 px-4 py-2 bg-secondary text-on-secondary rounded-lg font-body-sm font-bold shadow-sm hover:opacity-90 transition-opacity">
+<span class="material-symbols-outlined text-sm">download</span>
+                        Export PDF
+                    </button>
+</div>
+</div>
+<!-- Bento Grid Layout -->
+<div class="grid grid-cols-12 gap-6">
+<!-- Trend Line Chart -->
+<div class="col-span-12 lg:col-span-8 bg-surface-container-lowest p-6 rounded-xl elevation-low border border-outline-variant/30"><div class="flex flex-col items-center justify-center h-full py-12 text-center">
+<span class="material-symbols-outlined text-4xl text-outline-variant mb-4">analytics</span>
+<h3 class="font-headline-md text-headline-md mb-2">Income vs Expenses</h3>
+<p class="text-on-surface-variant font-body-lg">분석할 데이터가 부족합니다. 최소 1개월 이상의 내역이 필요합니다.</p>
+</div></div>
+<!-- Pie Chart Summary -->
+<div class="col-span-12 lg:col-span-4 bg-surface-container-lowest p-6 rounded-xl elevation-low border border-outline-variant/30 flex flex-col items-center"><div class="flex flex-col items-center justify-center h-full py-12 text-center">
+<span class="material-symbols-outlined text-4xl text-outline-variant mb-4">pie_chart</span>
+<h3 class="font-headline-md text-headline-md mb-2">Top Spending</h3>
+<p class="text-on-surface-variant font-body-lg">분석할 데이터가 부족합니다. 최소 1개월 이상의 내역이 필요합니다.</p>
+</div></div>
+<!-- Monthly Net Gain/Loss Table -->
+<div class="col-span-12 bg-surface-container-lowest rounded-xl elevation-low border border-outline-variant/30 overflow-hidden">
+<div class="p-6 border-b border-outline-variant/30 bg-surface-container-low/30">
+<h3 class="font-headline-md text-headline-md">Monthly Net Gain/Loss</h3>
+<p class="text-xs font-label-caps text-on-surface-variant uppercase tracking-wider">12-Month Fiscal Overview</p>
+</div>
+<div class="overflow-x-auto">
+<table class="w-full text-left border-collapse">
+<thead>
+<tr class="bg-surface-container-low/50">
+<th class="px-6 py-4 font-label-caps text-on-surface-variant">Month</th>
+<th class="px-6 py-4 font-label-caps text-on-surface-variant text-right">Total Income</th>
+<th class="px-6 py-4 font-label-caps text-on-surface-variant text-right">Total Expenses</th>
+<th class="px-6 py-4 font-label-caps text-on-surface-variant text-right">Net Difference</th>
+<th class="px-6 py-4 font-label-caps text-on-surface-variant">Status</th>
+</tr>
+</thead>
+<tbody class="divide-y divide-outline-variant/20"><tr>
+<td class="px-6 py-12 text-center text-on-surface-variant font-body-lg italic" colspan="5">데이터 없음</td>
+</tr></tbody>
+</table>
+</div>
+</div>
+</div>
+<!-- Footer Details -->
+<div class="grid grid-cols-1 md:grid-cols-3 gap-6 pt-4">
+<div class="bg-primary p-6 rounded-xl text-on-primary">
+<p class="text-xs font-label-caps opacity-70 mb-1">YEAR-TO-DATE SAVINGS</p>
+<h4 class="text-headline-lg font-headline-lg">$0.00</h4>
+</div>
+<div class="bg-surface-container-highest p-6 rounded-xl border border-outline-variant/30">
+<p class="text-xs font-label-caps text-on-surface-variant mb-1">AVERAGE MONTHLY SPEND</p>
+<h4 class="text-headline-lg font-headline-lg text-primary">$0.00</h4>
+</div>
+<div class="bg-secondary p-6 rounded-xl text-on-secondary">
+<p class="text-xs font-label-caps opacity-70 mb-1">NEXT RECURRING BUDGET</p>
+<h4 class="text-headline-lg font-headline-lg">$4,500.00</h4>
+<div class="mt-4 h-1 w-full bg-on-secondary/20 rounded-full overflow-hidden">
+<div class="h-full bg-on-secondary w-[65%]"></div>
+</div>
+</div>
+</div>
+</div>
+</main>
+<script>
+        // Simple micro-interactions for chart hover effects
+        document.querySelectorAll('table tr').forEach(row => {
+            row.addEventListener('mouseenter', () => {
+                row.style.transform = 'translateX(4px)';
+                row.style.transition = 'transform 0.2s ease-out';
+            });
+            row.addEventListener('mouseleave', () => {
+                row.style.transform = 'translateX(0px)';
+            });
+        });
+    </script>
+</body></html>
