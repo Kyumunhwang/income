@@ -26,7 +26,7 @@ export default function MonthlyChart({ data }: { data: MonthlyData[] }) {
         <Tooltip 
           cursor={{ fill: '#f6f3f5' }}
           contentStyle={{ borderRadius: '8px', border: '1px solid #c6c6cd', boxShadow: '0 4px 6px rgba(0,0,0,0.1)' }}
-          formatter={(value: number) => [`₩${value.toLocaleString()}`, '']}
+          formatter={(value: any) => [`₩${Number(value || 0).toLocaleString()}`, '']}
         />
         <Bar dataKey="income" name="Income" fill="#16a34a" radius={[4, 4, 0, 0]} barSize={16} />
         <Bar dataKey="expense" name="Expense" fill="#ba1a1a" radius={[4, 4, 0, 0]} barSize={16} />
